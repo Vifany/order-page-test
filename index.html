@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <style>
+        body {
+            font-family: Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif;
+            font-weight: normal;
+            background-color: #414E54;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            height:100vh;
+        }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0.5em;
+            background-color: #738A94;
+            z-index: 1;
+            box-shadow: 0 4px 8px 0 #14100B;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #BE9C75;
+            color: #414E54;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .label {
+            display: block;
+            text-align: left;
+            color: #414E54;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #738A94;
+            color: #14100B;
+            padding: 20px;
+            z-index: 3;
+            border-radius: 0.5em;
+            box-shadow: 0 4px 8px 0 #14100B;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="orderForm">
+            <div>
+                <label class = "label" for="name">Имя:</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div>
+                <label class = "label" for="phone">Номер Телефона:</label>
+                <input type="text" id="phone" name="phone">
+            </div>
+            <input type="hidden" name="test" value="test">
+            <input type="submit" value="Отправить Заказ">
+        </form>
+    </div>
+
+    <div id="successPopup" class="popup">
+        <p>Спасибо за Заказ!</p>
+    </div>
+
+    <div id="failPopup" class="popup">
+        <p>Ошибка ☹</p>
+    </div>
+
+    <script>
+        //Красивости на Javascript
+        function hidePopups() {
+            document.getElementById('successPopup').style.display = 'none';
+            document.getElementById('failPopup').style.display = 'none';
+        }
+    
+        document.addEventListener('click', function(event) {
+            hidePopups();
+        });
+    
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+    
+            fetch('process_order.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('successPopup').style.display = 'block';
+                    document.getElementById('orderForm').reset();
+                } else {
+                    document.getElementById('failPopup').style.display = 'block';
+                    document.getElementById('orderForm').reset();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('failPopup').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
