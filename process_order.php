@@ -30,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
             if ($data[0] === $name && $data[1] === $phoneNumber) {
                 http_response_code(400);
-                echo json_encode(array('error' => 'This pair already exists'));
                 exit();
             }
         }
